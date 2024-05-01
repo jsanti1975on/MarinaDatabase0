@@ -1,4 +1,4 @@
-# Define a function to get file properties
+# Define a function to get file properties //NEEDS TESTING
 function Get-FileProperties {
     [CmdletBinding()]
     param(
