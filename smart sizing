@@ -2,7 +2,7 @@
 Private Sub UserForm_Initialize()
     ' Load and display an image in Image1 with smart sizing
     Dim imgPath As String
-    imgPath = "C:\Path\To\Your\Image.jpg"  ' Path to your image file
+    imgPath = "C:/Path/ToYour/Image.jpg"  ' Path to your image file
     
     ' Check if the image file exists
     If Dir(imgPath) <> "" Then

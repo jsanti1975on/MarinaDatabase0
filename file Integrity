@@ -1,3 +1,4 @@
+# PowerShell
 # Define a function to get file properties //NEEDS TESTING
 function Get-FileProperties {
     [CmdletBinding()]

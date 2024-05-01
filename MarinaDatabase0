@@ -40,7 +40,7 @@ Private Sub CommandButton1_Click()
     ' Write data to worksheet
     With ws
         .Cells(lastRow, "A").Value = Trim(TextBox1.Value)     ' Name
-        .Cells(lastRow, "B").Value = slipNumberValue          ' SlipNumber
+        .Cells(lastRow, "B").Value = Trim(slipNumberValue)    ' SlipNumber
         .Cells(lastRow, "C").Value = Trim(TextBox3.Value)     ' TenantID#
         .Cells(lastRow, "E").Value = Trim(txtFLNumber.Value)  ' FLNumber
         .Cells(lastRow, "F").Value = Trim(txtPhone0.Value)    ' Phone0
@@ -82,7 +82,7 @@ Private Sub CommandButton2_Click()
     
     ' Construct image path based on TenantID#
     If Not foundRow Is Nothing Then
-        imgPath = "C:\Users\santj\ID\" & searchID & ".jpg"
+        imgPath = "C:/Users/santj/ID/" & searchID & ".jpg"
         
         ' Check if image file exists
         If Dir(imgPath) <> "" Then
