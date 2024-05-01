@@ -1,5 +1,22 @@
-# PowerShell
-# Define a function to get file properties //NEEDS TESTING
+# PowerShell File Integrity Checker
+
+This PowerShell script defines a function `Get-FileProperties` to retrieve various properties and checksums of a specified file to ensure its integrity.
+
+## Function Details
+
+### Get-FileProperties
+- This function takes a file path as input and retrieves the following properties:
+  - MD5 hash
+  - SHA-1 hash
+  - SHA-256 hash
+  - File size in bytes
+  - File type (MIME type)
+
+### Usage Example
+To use this script, provide the file path of the target file to the `Get-FileProperties` function. It will calculate the checksums and retrieve the file properties.
+
+```powershell
+# Define the function
 function Get-FileProperties {
     [CmdletBinding()]
     param(
