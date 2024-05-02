@@ -82,7 +82,7 @@ Private Sub CommandButton2_Click()
     
     ' Construct image path based on TenantID#
     If Not foundRow Is Nothing Then
-        imgPath = "C:/Users/santj/ID/" & searchID & ".jpg"
+        imgPath = "C:/Users/santj/ID" & searchID & ".jpg"
         
         ' Check if image file exists
         If Dir(imgPath) <> "" Then
