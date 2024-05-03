@@ -1,5 +1,6 @@
 Option Explicit
 
+    ' Gets the current User Name
 Private Sub CommandButton1_Click()
     ' Save data to worksheet
     Dim ws As Worksheet
@@ -40,12 +41,14 @@ Private Sub CommandButton1_Click()
     ' Write data to worksheet
     With ws
         .Cells(lastRow, "A").Value = Trim(TextBox1.Value)     ' Name
-        .Cells(lastRow, "B").Value = Trim(slipNumberValue)    ' SlipNumber
+        .Cells(lastRow, "B").Value = slipNumberValue          ' SlipNumber
         .Cells(lastRow, "C").Value = Trim(TextBox3.Value)     ' TenantID#
         .Cells(lastRow, "E").Value = Trim(txtFLNumber.Value)  ' FLNumber
         .Cells(lastRow, "F").Value = Trim(txtPhone0.Value)    ' Phone0
         .Cells(lastRow, "G").Value = Trim(txtPhone1.Value)    ' Phone1
         .Cells(lastRow, "H").Value = Trim(txtEmail0.Value)    ' Email0
+        .Cells(lastRow, "I").Value = Application.UserName      ' Log current user
+        .Cells(lastRow, "J").Value = Format(Now(), "DD-MM-YYYY HH:MM:SS") ' Log timestamp
     End With
     
     ' Clear input controls after saving
@@ -82,7 +85,7 @@ Private Sub CommandButton2_Click()
     
     ' Construct image path based on TenantID#
     If Not foundRow Is Nothing Then
-        imgPath = "C:/Users/santj/ID" & searchID & ".jpg"
+        imgPath = "Z:\SharesHome\" & searchID & ".jpg"
         
         ' Check if image file exists
         If Dir(imgPath) <> "" Then
@@ -106,18 +109,23 @@ Private Sub CommandButton2_Click()
 End Sub
 
 Private Sub CommandButton3_Click()
-   ' Browse and load image into Image1
+    ' Browse and load image into Image1
     Dim imgPath As Variant
     
+    ' Set the initial directory path
+    Dim initialPath As String
+    initialPath = "Z:\SharesHome\"
+    
     ' Open file dialog to select an image file
-    imgPath = Application.GetOpenFilename(FileFilter:="Images (*.jpg; *.jpeg; *.png),*.jpg; *.jpeg; *.png", Title:="Select an Image")
+    imgPath = Application.GetOpenFilename("Images (*.jpg; *.jpeg; *.png),*.jpg; *.jpeg; *.png", , "Select an Image", initialPath)
     
     ' Load and display selected image in Image1 if a file is selected
     If imgPath <> False Then
         Image1.Picture = LoadPicture(imgPath)
     End If
-
 End Sub
+
+
 
 Private Sub TextBox3_AfterUpdate()
     ' Retrieve data based on entered TenantID#
@@ -153,7 +161,8 @@ Private Sub TextBox3_AfterUpdate()
         
         ' Optional: Display image associated with the TenantID# (if available)
         Dim imgPath As String
-        imgPath = "C:/Users/santj/ID/" & searchID & ".jpg"
+        imgPath = "Z:\SharesHome\" & searchID & ".jpg"
+        
         If Dir(imgPath) <> "" Then
             Image1.Picture = LoadPicture(imgPath)
         Else
@@ -171,3 +180,4 @@ Private Sub TextBox3_AfterUpdate()
     End If
     
 End Sub
+
