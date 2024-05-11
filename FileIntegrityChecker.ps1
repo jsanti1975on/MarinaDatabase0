@@ -1,4 +1,4 @@
-# Define the function
+# Define the function to get file properties
 function Get-FileProperties {
     [CmdletBinding()]
     param(
@@ -12,52 +12,51 @@ function Get-FileProperties {
         return
     }
 
-    # Get file details using FileInfo object
-    $fileInfo = Get-Item -Path $FilePath
-
     # Calculate MD5 checksum
     $md5Hash = Get-FileHash -Path $FilePath -Algorithm MD5
-
-    # Calculate SHA-1 checksum
-    $sha1Hash = Get-FileHash -Path $FilePath -Algorithm SHA1
 
     # Calculate SHA-256 checksum
     $sha256Hash = Get-FileHash -Path $FilePath -Algorithm SHA256
 
-    # Determine file type (MIME type)
-    $mimeType = ""
-    $fileExtension = [System.IO.Path]::GetExtension($FilePath)
-    switch -Wildcard ($fileExtension) {
-        "*.docx" { $mimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document" }
-        "*.xlsx" { $mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }
-        default { $mimeType = "unknown" }
-    }
+    # Get only the file name from the full path
+    $fileName = [System.IO.Path]::GetFileNameWithoutExtension($FilePath)
 
     # Construct file properties object
     $properties = @{
-        "File Path" = $FilePath
+        "File Name" = $fileName
         "MD5" = $md5Hash.Hash.ToLower()
-        "SHA-1" = $sha1Hash.Hash.ToLower()
         "SHA-256" = $sha256Hash.Hash.ToLower()
-        "File Size (bytes)" = $fileInfo.Length
-        "File Type" = $mimeType
     }
 
     return $properties
 }
 
-# Usage example - Replace $filePath with your desired file path
-$filePath = "D:\Sec+\Microsoft Word Documents\CompTIA Security+.docx"
-$fileProperties = Get-FileProperties -FilePath $filePath
+# Specify the directory path to scan for .jpg files (replace with your desired directory)
+$directoryPath = "D:\IDs"
 
-if ($fileProperties) {
-    # Define output file path
-    $outputFilePath = Join-Path (Split-Path -Path $filePath) "testinghash.txt"
+# Get all .jpg files in the specified directory
+$files = Get-ChildItem -Path $directoryPath -File -Filter *.jpg
 
-    # Export file properties to text file
-    $fileProperties.GetEnumerator() | ForEach-Object {
-        "$($_.Key): $($_.Value)"
-    } | Out-File -FilePath $outputFilePath -Append
+# Array to store file properties
+$filePropertiesList = @()
 
-    Write-Host "File properties exported to: $outputFilePath"
+# Loop through each .jpg file and get its properties
+foreach ($file in $files) {
+    $fileProperties = Get-FileProperties -FilePath $file.FullName
+    if ($fileProperties) {
+        $filePropertiesList += $fileProperties
+    }
 }
+
+# Define the output file path (same directory as the IDs directory)
+$outputFilePath = Join-Path (Split-Path -Path $directoryPath) "hashes.txt"
+
+# Output file properties to the formatted text file (hashes.txt)
+$filePropertiesList | ForEach-Object {
+    "File Name: $($_.'File Name')"
+    "MD5: $($_.MD5)"
+    "SHA-256: $($_.'SHA-256')"
+    ""
+} | Out-File -FilePath $outputFilePath
+
+Write-Host "File properties exported to: $outputFilePath"
