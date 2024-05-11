@@ -1,21 +1,3 @@
-# PowerShell File Integrity Checker
-
-This PowerShell script defines a function `Get-FileProperties` to retrieve various properties and checksums of a specified file to ensure its integrity.
-
-## Function Details
-
-### Get-FileProperties
-- This function takes a file path as input and retrieves the following properties:
-  - MD5 hash
-  - SHA-1 hash
-  - SHA-256 hash
-  - File size in bytes
-  - File type (MIME type)
-
-### Usage Example
-To use this script, provide the file path of the target file to the `Get-FileProperties` function. It will calculate the checksums and retrieve the file properties.
-
-```powershell
 # Define the function
 function Get-FileProperties {
     [CmdletBinding()]
@@ -42,8 +24,14 @@ function Get-FileProperties {
     # Calculate SHA-256 checksum
     $sha256Hash = Get-FileHash -Path $FilePath -Algorithm SHA256
 
-    # Get MIME type using System.IO.Path
-    $mimeType = [System.IO.Path]::GetMimeType($FilePath)
+    # Determine file type (MIME type)
+    $mimeType = ""
+    $fileExtension = [System.IO.Path]::GetExtension($FilePath)
+    switch -Wildcard ($fileExtension) {
+        "*.docx" { $mimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document" }
+        "*.xlsx" { $mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }
+        default { $mimeType = "unknown" }
+    }
 
     # Construct file properties object
     $properties = @{
@@ -58,13 +46,18 @@ function Get-FileProperties {
     return $properties
 }
 
-# Usage example
-$filePath = "C:\Path\To\Your\File.ext"
+# Usage example - Replace $filePath with your desired file path
+$filePath = "D:\Sec+\Microsoft Word Documents\CompTIA Security+.docx"
 $fileProperties = Get-FileProperties -FilePath $filePath
 
 if ($fileProperties) {
-    Write-Host "File Properties:"
+    # Define output file path
+    $outputFilePath = Join-Path (Split-Path -Path $filePath) "testinghash.txt"
+
+    # Export file properties to text file
     $fileProperties.GetEnumerator() | ForEach-Object {
-        Write-Host "$($_.Key): $($_.Value)"
-    }
+        "$($_.Key): $($_.Value)"
+    } | Out-File -FilePath $outputFilePath -Append
+
+    Write-Host "File properties exported to: $outputFilePath"
 }
