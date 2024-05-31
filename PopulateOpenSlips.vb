@@ -15,6 +15,7 @@ Private Sub PopulateOpenSlips()
     Dim cell As Range
     Dim openSlipRowIndices As Collection
     Dim slipNumber As String
+    Dim rowNumber As Variant
     
     ' Set the worksheet object
     Set ws = ThisWorkbook.Sheets("Sheet1")
